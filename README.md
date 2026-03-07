@@ -11,7 +11,7 @@
 [![Framer Motion](https://img.shields.io/badge/Framer_Motion-black?style=for-the-badge&logo=framer&logoColor=blue)](https://www.framer.com/motion/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Hosted_on_Vercel-success?style=for-the-badge&logo=vercel)](https://YOUR_VERCEL_URL.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Hosted_on_Vercel-success?style=for-the-badge&logo=vercel)](https://astrova-psi.vercel.app/)
 
 <!-- Add a GIF or screenshot here -->
 
