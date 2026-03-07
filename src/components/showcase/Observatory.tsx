@@ -18,7 +18,7 @@ export default function Observatory({ onViewChange }: ObservatoryProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [displayedIndex, setDisplayedIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
-    const [activeCategory, setActiveCategory] = useState<CosmicCategory>('test');
+    const [activeCategory, setActiveCategory] = useState<CosmicCategory>('all');
     const [is360View, setIs360View] = useState(true);
 
     const isTransitioningRef = useRef(false);
@@ -54,7 +54,7 @@ export default function Observatory({ onViewChange }: ObservatoryProps) {
                 combined = [apod, ...combined];
             }
             setAllObjects(combined);
-            setFilteredObjects(combined.filter(obj => obj.category === 'test'));
+            setFilteredObjects(combined);
 
             setTimeout(() => {
                 if (mounted) setIsReady(true);

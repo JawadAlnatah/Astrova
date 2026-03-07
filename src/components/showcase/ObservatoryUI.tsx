@@ -20,13 +20,7 @@ interface ObservatoryUIProps {
 const CATEGORIES: { id: CosmicCategory | 'all', label: string }[] = [
     { id: 'all', label: 'all' },
     { id: 'nebula', label: 'nebulae' },
-    { id: 'galaxy', label: 'galaxies' },
-    { id: 'blackhole', label: 'black holes' },
-    { id: 'supernova', label: 'supernovae' },
-    { id: 'cluster', label: 'star clusters' },
-    { id: 'aurora', label: 'auroras' },
-    { id: 'pulsar', label: 'pulsars' },
-    { id: 'test', label: 'test images' }
+    { id: 'starscape', label: 'starscapes' }
 ];
 
 export default function ObservatoryUI({
