@@ -25,34 +25,29 @@ Astrova is an immersive 3D space exploration web experience built to evoke the f
 
 ## Features
 
-<div align="center">
-  <table>
-    <tr>
-      <td width="50%" valign="top">
-        <h3>🪐 Solar System</h3>
-        <ul>
-          <li><b>All 8 planets</b> rendered in 3D with real NASA textures</li>
-          <li><b>☀️ Animated Sun</b> with bloom glow effect</li>
-          <li><b>🌙 Interactive Moon</b> phase navigator (full 29.5-day cycle)</li>
-          <li><b>☄️ Real near-Earth asteroids</b> from the NASA NeoWs API</li>
-          <li><b>🌍 "My Sky Tonight"</b> — ISS pass times, visible planets, meteor showers based on your location</li>
-          <li><b>🎥 Cinematic planet zoom</b> with info panels and shocking facts</li>
-        </ul>
-      </td>
-      <td width="50%" valign="top">
-        <h3>🔭 The Observatory</h3>
-        <ul>
-          <li><b>🌌 Curated gallery</b> of the universe's most breathtaking phenomena</li>
-          <li><b>🪐 Per-object 3D treatments:</b> nebula skybox, galaxy particle system, black hole lensing shader, supernova parallax, aurora ripple shader, pulsar beams</li>
-          <li><b>✨ Custom GLSL shaders</b> for gravitational lensing and aurora wave distortion</li>
-          <li><b>🖼️ Majestic sources:</b> James Webb Space Telescope, Hubble, NOIRLab, ESA</li>
-          <li><b>🎞️ Cinematic fade-to-black</b> transitions between objects</li>
-          <li><b>🗂️ Category filtering:</b> Nebulae, Galaxies, Black Holes, Supernovae, Star Clusters, Aurora, Pulsars</li>
-        </ul>
-      </td>
-    </tr>
-  </table>
-</div>
+### 🪐 Solar System
+<ul>
+  <li><b>All 8 planets</b> rendered in 3D with real NASA textures</li>
+  <li><b>☀️ Animated Sun</b> with bloom glow effect</li>
+  <li><b>🌙 Interactive Moon</b> phase navigator (full 29.5-day cycle)</li>
+  <li><b>☄️ Real near-Earth asteroids</b> from the NASA NeoWs API</li>
+  <li><b>🌍 "My Sky Tonight"</b> — ISS pass times, visible planets, meteor showers based on your location</li>
+  <li><b>🎥 Cinematic planet zoom</b> with info panels and shocking facts</li>
+</ul>
+
+![Solar System](image-2.png)
+
+### 🔭 The Observatory
+<ul>
+  <li><b>🌌 Curated gallery</b> of the universe's most breathtaking phenomena</li>
+  <li><b>🪐 Per-object 3D treatments:</b> nebula skybox, galaxy particle system, black hole lensing shader, supernova parallax, aurora ripple shader, pulsar beams</li>
+  <li><b>✨ Custom GLSL shaders</b> for gravitational lensing and aurora wave distortion</li>
+  <li><b>🖼️ Majestic sources:</b> James Webb Space Telescope, Hubble, NOIRLab, ESA</li>
+  <li><b>🎞️ Cinematic fade-to-black</b> transitions between objects</li>
+  <li><b>🗂️ Category filtering:</b> Nebulae, Galaxies, Black Holes, Supernovae, Star Clusters, Aurora, Pulsars</li>
+</ul>
+
+![The Observatory](image-3.png)
 
 ---
 
