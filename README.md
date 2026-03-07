@@ -3,7 +3,7 @@
 # Astrova
 *The cosmos, at your fingertips.*
 
-![alt text](image.png)
+![alt text](image-1.png)
 
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.js.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
