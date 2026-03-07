@@ -81,8 +81,6 @@ npm install
 npm run dev
 ```
 
-> **Note:** Requires a free NASA API key from [api.nasa.gov](https://api.nasa.gov/). Add it to a `.env` file as `VITE_NASA_API_KEY=your_key_here`
-
 ---
 
 ## Project Structure
