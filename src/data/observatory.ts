@@ -13,26 +13,7 @@ export interface CosmicObject {
     procedural?: boolean;
 }
 
-export function categorizeObject(apodData: any): string {
-    const text = (apodData.title + ' ' + (apodData.explanation || '')).toLowerCase();
 
-    if (text.includes('nebula') || text.includes('cloud') || text.includes('pillars'))
-        return 'nebula';
-    if (text.includes('galaxy') || text.includes('galax'))
-        return 'galaxy';
-    if (text.includes('black hole') || text.includes('singularity'))
-        return 'blackhole';
-    if (text.includes('supernova') || text.includes('remnant') || text.includes('explosion'))
-        return 'supernova';
-    if (text.includes('cluster') || text.includes('globular'))
-        return 'cluster';
-    if (text.includes('aurora') || text.includes('northern lights'))
-        return 'aurora';
-    if (text.includes('pulsar') || text.includes('neutron star'))
-        return 'pulsar';
-
-    return 'general';
-}
 
 export const cosmosCollection: CosmicObject[] = [
     {
@@ -92,47 +73,4 @@ export const cosmosCollection: CosmicObject[] = [
     }
 ];
 
-export async function fetchAPOD(): Promise<CosmicObject | null> {
-    const CACHE_KEY = 'astrova_apod_cache_v2';
-    const CACHE_DATE_KEY = 'astrova_apod_date_v2';
 
-    const today = new Date().toISOString().split('T')[0];
-    const cachedDate = sessionStorage.getItem(CACHE_DATE_KEY);
-    const cachedData = sessionStorage.getItem(CACHE_KEY);
-
-    if (cachedDate === today && cachedData) {
-        return JSON.parse(cachedData);
-    }
-
-    try {
-        const response = await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY');
-        const data = await response.json();
-
-        if (data.media_type === 'image') {
-            // APOD images often lack CORS headers, crashing WebGL. Route through an image proxy that adds them and resizes to max 2048px to prevent GPU VRAM overflows.
-            const sourceUrl = data.hdurl || data.url;
-            const proxiedUrl = `https://wsrv.nl/?url=${encodeURIComponent(sourceUrl)}&output=jpg&w=2048`;
-
-            const object: CosmicObject = {
-                id: `apod-${today}`,
-                title: data.title,
-                classification: 'ASTRONOMY PICTURE OF THE DAY',
-                category: categorizeObject(data),
-                fact: data.explanation.split('.')[0] + '.', // First sentence as a fact
-                distance: 'Varies',
-                imageUrl: proxiedUrl,
-                credit: data.copyright ? `Image: ${data.copyright}` : 'NASA APOD',
-                glowColor: '#00d4d8',
-            };
-
-            sessionStorage.setItem(CACHE_KEY, JSON.stringify(object));
-            sessionStorage.setItem(CACHE_DATE_KEY, today);
-
-            return object;
-        }
-    } catch (e) {
-        console.error("Failed to fetch APOD", e);
-    }
-
-    return null;
-}

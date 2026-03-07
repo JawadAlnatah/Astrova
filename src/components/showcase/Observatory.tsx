@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../ui/Navbar';
 import ObservatoryUI from './ObservatoryUI';
 import ObservatoryScene from './ObservatoryScene';
-import { fetchAPOD, cosmosCollection, CosmicObject, CosmicCategory } from '../../data/observatory';
+import { cosmosCollection, CosmicObject, CosmicCategory } from '../../data/observatory';
 import { ErrorBoundary } from 'react-error-boundary';
 
 interface ObservatoryProps {
@@ -42,26 +42,21 @@ export default function Observatory({ onViewChange }: ObservatoryProps) {
         }, 1600);
     };
 
-    // Initial load & APOD fetch
+    // Initial load
     useEffect(() => {
         let mounted = true;
-        const loadAPI = async () => {
-            const apod = await fetchAPOD();
+        const loadData = () => {
             if (!mounted) return;
 
-            let combined = [...cosmosCollection];
-            if (apod) {
-                combined = [apod, ...combined];
-            }
-            setAllObjects(combined);
-            setFilteredObjects(combined);
+            setAllObjects([...cosmosCollection]);
+            setFilteredObjects([...cosmosCollection]);
 
             setTimeout(() => {
                 if (mounted) setIsReady(true);
             }, 3000); // 3 second cinematic entry
         };
 
-        loadAPI();
+        loadData();
 
         return () => { mounted = false; };
     }, []);
