@@ -1,0 +1,199 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CosmicObject, CosmicCategory } from '../../data/observatory';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+interface ObservatoryUIProps {
+    currentObj: CosmicObject;
+    totalObjects: number;
+    currentIndex: number;
+    onNext: () => void;
+    onPrev: () => void;
+    onSetIndex: (index: number) => void;
+    activeCategory: CosmicCategory;
+    onSetCategory: (cat: CosmicCategory) => void;
+    visibleItemsCount: number;
+    is360View: boolean;
+    onToggle360View: () => void;
+}
+
+const CATEGORIES: { id: CosmicCategory | 'all', label: string }[] = [
+    { id: 'all', label: 'all' },
+    { id: 'nebula', label: 'nebulae' },
+    { id: 'galaxy', label: 'galaxies' },
+    { id: 'blackhole', label: 'black holes' },
+    { id: 'supernova', label: 'supernovae' },
+    { id: 'cluster', label: 'star clusters' },
+    { id: 'aurora', label: 'auroras' },
+    { id: 'pulsar', label: 'pulsars' },
+    { id: 'test', label: 'test images' }
+];
+
+export default function ObservatoryUI({
+    currentObj,
+    totalObjects,
+    currentIndex,
+    onNext,
+    onPrev,
+    onSetIndex,
+    activeCategory,
+    onSetCategory,
+    visibleItemsCount,
+    is360View,
+    onToggle360View
+}: ObservatoryUIProps) {
+
+    const [isHoveringTop, setIsHoveringTop] = useState(false);
+
+    // Filter Bar at the top
+    const FilterBar = () => (
+        <div
+            className="fixed top-0 inset-x-0 h-32 z-40 flex flex-col items-center justify-start pt-24 pointer-events-none"
+            onMouseEnter={() => setIsHoveringTop(true)}
+            onMouseLeave={() => setIsHoveringTop(false)}
+        >
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: isHoveringTop ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-wrapjustify-center gap-6 px-8 pointer-events-auto"
+            >
+                {CATEGORIES.map(({ id, label }) => (
+                    <button
+                        key={id}
+                        onClick={() => onSetCategory(id as CosmicCategory)}
+                        className="text-[9px] uppercase tracking-[0.2em] font-medium relative py-1 transition-colors"
+                        style={{
+                            fontFamily: 'Orbitron, sans-serif',
+                            color: activeCategory === id ? '#fff' : 'rgba(255,255,255,0.4)'
+                        }}
+                    >
+                        {label}
+                        {activeCategory === id && (
+                            <motion.div
+                                layoutId="activeCat"
+                                className="absolute -bottom-1 left-0 right-0 h-[1px] bg-[#00d4d8]"
+                            />
+                        )}
+                    </button>
+                ))}
+
+                {/* 360 View Toggle for Testing */}
+                <button
+                    onClick={onToggle360View}
+                    className="text-[9px] uppercase tracking-[0.2em] font-medium relative py-1 transition-colors ml-8 border border-white/20 px-3 rounded-full hover:bg-white/10"
+                    style={{
+                        fontFamily: 'Orbitron, sans-serif',
+                        color: is360View ? '#00d4d8' : 'rgba(255,255,255,0.6)',
+                        borderColor: is360View ? '#00d4d8' : 'rgba(255,255,255,0.2)'
+                    }}
+                >
+                    {is360View ? '360° MODE: ON' : '360° MODE: OFF'}
+                </button>
+            </motion.div>
+        </div>
+    );
+
+    // Information Layer staggered fade in based on object ID change
+    const InfoLayer = () => (
+        <AnimatePresence mode="wait">
+            <motion.div
+                key={currentObj.id}
+                className="absolute inset-0 pointer-events-none z-30"
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+            >
+                {/* Name & Classification (Left side, low) */}
+                <div className="absolute left-10 md:left-20 bottom-32 md:bottom-40 max-w-2xl">
+                    <motion.p
+                        variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { delay: 3.0, duration: 1.5 } } }}
+                        className="text-[#00d4d8] uppercase tracking-[0.3em] font-semibold text-[10px] md:text-xs mb-3"
+                        style={{ fontFamily: 'Orbitron, sans-serif' }}
+                    >
+                        {currentObj.classification}
+                    </motion.p>
+                    <motion.h1
+                        variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { delay: 3.5, duration: 1.5 } } }}
+                        className="text-white font-bold leading-none mb-6 tracking-widest uppercase"
+                        style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', textShadow: '0 4px 20px rgba(0,0,0,0.8)' }}
+                    >
+                        {currentObj.title}
+                    </motion.h1>
+                    <motion.p
+                        variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: 4.5, duration: 2.0 } } }}
+                        className="text-white/80 text-base md:text-lg leading-relaxed max-w-xl pr-4"
+                        style={{ fontFamily: "'Playfair Display', 'Georgia', serif", textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}
+                    >
+                        {currentObj.fact}
+                    </motion.p>
+                </div>
+
+                {/* Distance (Bottom right) */}
+                <motion.div
+                    variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: 5.5, duration: 2.0 } } }}
+                    className="absolute right-8 bottom-12 text-white/30 text-[10px] md:text-xs tracking-widest uppercase text-right max-w-[200px]"
+                    style={{ fontFamily: 'Orbitron, sans-serif' }}
+                >
+                    {currentObj.distance}
+                </motion.div>
+
+                {/* Credit (Bottom left) */}
+                <motion.div
+                    variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: 6.0, duration: 2.0 } } }}
+                    className="absolute left-8 bottom-12 text-white/30 text-[8px] md:text-[10px] tracking-widest uppercase"
+                    style={{ fontFamily: 'Orbitron, sans-serif' }}
+                >
+                    {currentObj.credit}
+                </motion.div>
+            </motion.div>
+        </AnimatePresence>
+    );
+
+    // Standard Nav Dots
+    const NavDots = () => (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 z-30 pointer-events-auto">
+            {Array.from({ length: visibleItemsCount }).map((_, i) => (
+                <button
+                    key={i}
+                    onClick={() => onSetIndex(i)}
+                    className="rounded-full transition-all duration-500 ease-out"
+                    style={{
+                        width: i === currentIndex ? 24 : 6,
+                        height: 6,
+                        background: i === currentIndex ? currentObj.glowColor || '#00d4d8' : 'rgba(255,255,255,0.2)'
+                    }}
+                    aria-label={`Go to object ${i + 1}`}
+                />
+            ))}
+        </div>
+    );
+
+    const NavArrows = () => (
+        <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-between px-4 md:px-8">
+            <button
+                onClick={onPrev}
+                className="pointer-events-auto p-4 rounded-full text-white/30 hover:text-white/90 transition-colors"
+                style={{ background: 'radial-gradient(circle, rgba(0,0,0,0.4) 0%, transparent 70%)' }}
+            >
+                <ChevronLeft size={32} strokeWidth={1} />
+            </button>
+            <button
+                onClick={onNext}
+                className="pointer-events-auto p-4 rounded-full text-white/30 hover:text-white/90 transition-colors"
+                style={{ background: 'radial-gradient(circle, rgba(0,0,0,0.4) 0%, transparent 70%)' }}
+            >
+                <ChevronRight size={32} strokeWidth={1} />
+            </button>
+        </div>
+    );
+
+    return (
+        <>
+            <FilterBar />
+            <InfoLayer />
+            <NavArrows />
+            <NavDots />
+        </>
+    );
+}

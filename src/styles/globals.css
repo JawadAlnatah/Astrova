@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@400;500;700;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Orbitron", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  color: #fff;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+/* Hide scrollbar for HUD elements */
+::-webkit-scrollbar {
+  display: none;
+}
+
+.font-orbitron {
+  font-family: var(--font-display);
+}
+
+.glow-text {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.glow-border {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
