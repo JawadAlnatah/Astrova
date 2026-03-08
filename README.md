@@ -3,7 +3,7 @@
 # Astrova
 *The cosmos, at your fingertips.*
 
-![alt text](image-1.png)
+![alt text](public/assets/image-1.png)
 
 [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.js.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -35,7 +35,7 @@ Astrova is an immersive 3D space exploration web experience built to evoke the f
   <li><b>🎥 Cinematic planet zoom</b> with info panels and shocking facts</li>
 </ul>
 
-![Solar System](image-2.png)
+![Solar System](public/assets/image-2.png)
 
 ### 🔭 The Observatory
 <ul>
@@ -47,7 +47,7 @@ Astrova is an immersive 3D space exploration web experience built to evoke the f
   <li><b>🗂️ Category filtering:</b> Nebulae, Galaxies, Black Holes, Supernovae, Star Clusters, Aurora, Pulsars</li>
 </ul>
 
-![The Observatory](image-3.png)
+![The Observatory](public/assets/image-3.png)
 
 ---
 
