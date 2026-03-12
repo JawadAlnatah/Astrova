@@ -183,7 +183,7 @@ function StatsPanel({ planet }: { planet: (typeof planets)[0] }) {
 
     return (
         <div
-            className="absolute top-0 right-0 h-full overflow-y-auto no-scrollbar"
+            className="absolute top-0 right-0 h-full overflow-y-auto no-scrollbar hidden md:block"
             style={{
                 width: 'min(420px, 38vw)',
                 background: 'linear-gradient(to left, rgba(2,5,18,0.92) 0%, rgba(2,5,18,0.75) 70%, transparent 100%)',
@@ -418,6 +418,7 @@ export default function PlanetDetailOverlay({ planetId, onClose }: PlanetDetailO
                         key={planet.id}
                         camera={{ position: [0, 0, 52], fov: 48 }}
                         gl={{ antialias: true, alpha: false }}
+                        dpr={[1, 2]}
                     >
                         <React.Suspense fallback={null}>
                             <DetailScene planet={planet} />
@@ -474,9 +475,9 @@ export default function PlanetDetailOverlay({ planetId, onClose }: PlanetDetailO
                     </button>
                 </div>
 
-                {/* ── Left side: planet name hero text (same style as PlanetShowcase) ─── */}
+                {/* ── Left side: planet name hero text ─── Desktop layout ─────────────── */}
                 <div
-                    className="absolute left-0 top-0 bottom-0 z-20 flex flex-col justify-center pointer-events-none"
+                    className="absolute left-0 top-0 bottom-0 z-20 flex flex-col justify-center pointer-events-none hidden md:flex"
                     style={{ paddingLeft: 'clamp(32px, 6vw, 80px)', maxWidth: '50vw' }}
                 >
                     <AnimatePresence mode="wait">
@@ -528,7 +529,35 @@ export default function PlanetDetailOverlay({ planetId, onClose }: PlanetDetailO
                     </AnimatePresence>
                 </div>
 
-                {/* ── Right side stats panel ───────────────────────────────────────────── */}
+                {/* ── Mobile: Planet name + scrollable stats stacked ─────────────────── */}
+                <div className="md:hidden absolute inset-0 z-20 flex flex-col overflow-hidden"
+                    style={{ paddingTop: '72px' }}
+                >
+                    {/* Planet name at the top on mobile */}
+                    <div className="px-5 pt-4 flex-shrink-0 pointer-events-none">
+                        <p className="text-[#00d4d8] uppercase tracking-[0.3em] font-semibold text-[9px] mb-1"
+                            style={{ fontFamily: 'Orbitron, sans-serif' }}>Planet</p>
+                        <h1 className="font-bold leading-none mb-3 text-white uppercase"
+                            style={{ fontFamily: "'Playfair Display', 'Georgia', serif", fontSize: 'clamp(2rem, 10vw, 3.5rem)', textShadow: '0 0 40px rgba(255,255,255,0.15)' }}>
+                            {planet.name.toUpperCase()}
+                        </h1>
+                    </div>
+                    {/* Scrollable stats below */}
+                    <div className="flex-1 overflow-y-auto no-scrollbar"
+                        style={{
+                            background: 'linear-gradient(to top, rgba(2,5,18,0.98) 0%, rgba(2,5,18,0.80) 60%, transparent 100%)',
+                            paddingTop: '12px', paddingBottom: '32px', paddingLeft: '20px', paddingRight: '20px'
+                        }}
+                    >
+                        <AnimatePresence mode="wait">
+                            <motion.div key={planet.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                                <StatsPanel planet={planet} />
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
+                </div>
+
+                {/* ── Right side stats panel ─────────── Desktop only ──────────────────── */}
                 <div className="absolute top-0 right-0 h-full z-20 pointer-events-auto">
                     <AnimatePresence mode="wait">
                         <motion.div

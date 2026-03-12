@@ -5,6 +5,7 @@ import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import { useDeviceTier, DeviceTier } from '../../hooks/useDeviceTier';
 
 import Sun from './Sun';
 import Planet from './Planet';
@@ -184,6 +185,7 @@ function SceneContent({
   isMoonSelected,
   controlsRef,
   cameraResetTrigger,
+  tier,
 }: {
   selectedPlanet: string | null;
   setSelectedPlanet: (id: string | null) => void;
@@ -191,6 +193,7 @@ function SceneContent({
   isMoonSelected: boolean;
   controlsRef: React.RefObject<OrbitControlsImpl>;
   cameraResetTrigger: number;
+  tier: DeviceTier;
 }) {
   const { camera } = useThree();
   const directionalLightRef = useRef<THREE.DirectionalLight>(null);
@@ -257,9 +260,9 @@ function SceneContent({
       {!isMoonSelected && <NebulaBackground />}
 
       {/* Stars — radius far beyond max zoom so they're always visible */}
-      <Stars radius={10000} depth={500} count={18000} factor={8} saturation={0.5} speed={0.2} />
+      <Stars radius={10000} depth={500} count={tier === 'high' ? 18000 : 5000} factor={8} saturation={0.5} speed={0.2} />
       {/* Deep-field layer — creates galaxy ball feel when zoomed way out */}
-      <Stars radius={8000} depth={2000} count={6000} factor={12} saturation={0.3} speed={0.1} />
+      <Stars radius={8000} depth={2000} count={tier === 'high' ? 6000 : 1500} factor={12} saturation={0.3} speed={0.1} />
 
       {/* Sun */}
       <group visible={!isMoonSelected}>
@@ -311,6 +314,7 @@ export default function SolarSystem({
   const [showTimeline, setShowTimeline] = useState(false);
   const [cameraResetTrigger, setCameraResetTrigger] = useState(0);
   const controlsRef = useRef<OrbitControlsImpl>(null);
+  const tier = useDeviceTier();
 
   // Handle camera reset on panel close
   const handleClosePlanet = useCallback(() => {
@@ -349,6 +353,7 @@ export default function SolarSystem({
           <Canvas
             camera={{ position: [0, 950, 1300], fov: 45, near: 1, far: 20000 }}
             gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+            dpr={[1, 2]}
           >
             <React.Suspense
               fallback={
@@ -379,6 +384,7 @@ export default function SolarSystem({
                 isMoonSelected={isMoonSelected}
                 controlsRef={controlsRef}
                 cameraResetTrigger={cameraResetTrigger}
+                tier={tier}
               />
             </React.Suspense>
           </Canvas>

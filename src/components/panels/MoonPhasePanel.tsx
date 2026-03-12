@@ -89,7 +89,7 @@ export default function MoonPhasePanel({ onClose, phase, setPhase }: MoonPhasePa
     <div className="absolute inset-0 z-50 bg-[#020d1a] overflow-hidden flex flex-col">
       {/* 3D Viewport */}
       <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 35], fov: 45 }} gl={{ antialias: true, alpha: false }}>
+        <Canvas camera={{ position: [0, 0, 35], fov: 45 }} gl={{ antialias: true, alpha: false }} dpr={[1, 2]}>
           <React.Suspense fallback={null}>
             <OrbitControls enableZoom={true} enablePan={false} minDistance={15} maxDistance={60} autoRotate={false} />
             <MoonScene phase={phase} />

@@ -121,7 +121,7 @@ export default function HUDOverlay({ selectedPlanetId, onSelectPlanet }: HUDOver
             <button
               key={planet.id}
               onClick={() => onSelectPlanet(planet.id)}
-              className="flex flex-col items-center gap-1.5 px-3.5 py-2.5 rounded-lg transition-all duration-250 group relative"
+              className="flex flex-col items-center gap-1.5 px-1.5 md:px-3.5 py-2.5 rounded-lg transition-all duration-250 group relative"
               style={{
                 background: isActive
                   ? `radial-gradient(ellipse at 50% 0%, ${planet.atmosphereColor}22 0%, transparent 70%)`

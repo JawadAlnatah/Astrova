@@ -5,12 +5,14 @@ import ObservatoryUI from './ObservatoryUI';
 import ObservatoryScene from './ObservatoryScene';
 import { cosmosCollection, CosmicObject, CosmicCategory } from '../../data/observatory';
 import { ErrorBoundary } from 'react-error-boundary';
+import { useDeviceTier } from '../../hooks/useDeviceTier';
 
 interface ObservatoryProps {
     onViewChange: (view: 'planets' | 'cosmos' | 'observatory') => void;
 }
 
 export default function Observatory({ onViewChange }: ObservatoryProps) {
+    const tier = useDeviceTier();
     const [isReady, setIsReady] = useState(false);
 
     const [allObjects, setAllObjects] = useState<CosmicObject[]>([]);
@@ -51,9 +53,10 @@ export default function Observatory({ onViewChange }: ObservatoryProps) {
             setAllObjects([...cosmosCollection]);
             setFilteredObjects([...cosmosCollection]);
 
+            const minDelay = tier === 'high' ? 3000 : 1500; // shorter wait on mobile
             setTimeout(() => {
                 if (mounted) setIsReady(true);
-            }, 3000); // 3 second cinematic entry
+            }, minDelay);
         };
 
         loadData();
@@ -161,11 +164,11 @@ export default function Observatory({ onViewChange }: ObservatoryProps) {
                 />
             </div>
 
-            {/* Return Link */}
-            <div className="absolute bottom-8 left-8 z-40 pointer-events-auto">
+            {/* Return Link — positioned to avoid nav dots */}
+            <div className="absolute bottom-16 md:bottom-8 left-4 md:left-8 z-40 pointer-events-auto">
                 <button
                     onClick={() => onViewChange('planets')}
-                    className="group flex flex-col items-start gap-1 p-2 opacity-50 hover:opacity-100 transition-opacity duration-300"
+                    className="group flex flex-col items-start gap-1 p-2 opacity-50 hover:opacity-100 active:opacity-100 transition-opacity duration-300"
                 >
                     <span
                         className="text-[10px] tracking-[0.2em] uppercase font-bold text-white transition-colors"
