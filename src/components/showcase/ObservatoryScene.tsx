@@ -4,19 +4,28 @@ import { OrbitControls, Stars, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { CosmicObject } from '../../data/observatory';
 import gsap from 'gsap';
+import { useDeviceTier, DeviceTier } from '../../hooks/useDeviceTier';
 
 interface ObservatorySceneProps {
     currentObj: CosmicObject;
     is360View: boolean;
 }
 
+interface TreatmentProps {
+    obj: CosmicObject;
+    tier: DeviceTier;
+}
+
 // ==========================================
 // INDIVIDUAL TREATMENTS
 // ==========================================
 
-function NebulaTreatment({ obj, is360View }: { obj: CosmicObject, is360View: boolean }) {
+function NebulaTreatment({ obj, tier, is360View }: TreatmentProps & { is360View: boolean }) {
     const rawUrl = obj.imageUrl || '/cosmos/pillars of creation.jpg'; // fallback
-    const textureUrl = rawUrl;
+    const width = tier === 'high' ? 2048 : 1024;
+    const textureUrl = rawUrl.startsWith('http') && !rawUrl.includes('wsrv.nl')
+        ? `https://wsrv.nl/?url=${encodeURIComponent(rawUrl)}&output=jpg&w=${width}`
+        : rawUrl;
     const texture = useTexture(textureUrl);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.minFilter = THREE.LinearFilter;
@@ -48,14 +57,14 @@ function NebulaTreatment({ obj, is360View }: { obj: CosmicObject, is360View: boo
             )}
 
             {/* Minimal dust particles */}
-            <Stars radius={50} depth={200} count={1500} factor={4} saturation={0} fade speed={0.5} />
+            <Stars radius={50} depth={200} count={tier === 'high' ? 1500 : 400} factor={4} saturation={0} fade speed={0.5} />
         </group>
     );
 }
 
-function GalaxyTreatment({ obj }: { obj: CosmicObject }) {
+function GalaxyTreatment({ obj, tier }: TreatmentProps) {
     const particlesRef = useRef<THREE.Points>(null);
-    const count = 20000;
+    const count = tier === 'high' ? 20000 : 6000;
 
     // Procedural spiral construction
     const [positions, colors] = React.useMemo(() => {
@@ -86,7 +95,7 @@ function GalaxyTreatment({ obj }: { obj: CosmicObject }) {
             col[i3 + 2] = mixedColor.b;
         }
         return [pos, col];
-    }, [obj.glowColor]);
+    }, [obj.glowColor, count]);
 
     useFrame(() => {
         if (particlesRef.current) {
@@ -108,7 +117,7 @@ function GalaxyTreatment({ obj }: { obj: CosmicObject }) {
     );
 }
 
-function BlackHoleTreatment({ obj }: { obj: CosmicObject }) {
+function BlackHoleTreatment({ obj, tier }: TreatmentProps) {
     const diskRef = useRef<THREE.Mesh>(null);
 
     useFrame(({ clock }) => {
@@ -180,14 +189,17 @@ function BlackHoleTreatment({ obj }: { obj: CosmicObject }) {
             </mesh>
 
             {/* Also add proper star field behind so lensing is visible */}
-            <Stars radius={80} depth={150} count={4000} factor={5} saturation={0} fade speed={0.5} />
+            <Stars radius={80} depth={150} count={tier === 'high' ? 4000 : 1000} factor={5} saturation={0} fade speed={0.5} />
         </group>
     );
 }
 
-function SupernovaTreatment({ obj }: { obj: CosmicObject }) {
+function SupernovaTreatment({ obj, tier }: TreatmentProps) {
     const rawUrl = obj.imageUrl || 'https://upload.wikimedia.org/wikipedia/commons/0/00/Crab_Nebula.jpg';
-    const textureUrl = rawUrl;
+    const width = tier === 'high' ? 2048 : 1024;
+    const textureUrl = rawUrl.startsWith('http') && !rawUrl.includes('wsrv.nl')
+        ? `https://wsrv.nl/?url=${encodeURIComponent(rawUrl)}&output=jpg&w=${width}`
+        : rawUrl;
     const texture = useTexture(textureUrl);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.minFilter = THREE.LinearFilter;
@@ -197,31 +209,35 @@ function SupernovaTreatment({ obj }: { obj: CosmicObject }) {
     const layer3 = useRef<THREE.Mesh>(null);
 
     useFrame(({ mouse }) => {
-        // Parallax effect based on mouse
-        if (layer1.current) layer1.current.position.set(mouse.x * 5, mouse.y * 5, -200);
-        if (layer2.current) layer2.current.position.set(mouse.x * 15, mouse.y * 15, -100);
+        // Parallax effect based on mouse (only useful on desktop anyway)
         if (layer3.current) layer3.current.position.set(mouse.x * 25, mouse.y * 25, -50);
+        if (tier === 'high') {
+            if (layer1.current) layer1.current.position.set(mouse.x * 5, mouse.y * 5, -200);
+            if (layer2.current) layer2.current.position.set(mouse.x * 15, mouse.y * 15, -100);
+        }
     });
 
     return (
         <group>
-            {/* Back layer — full image, normal blending */}
-            <mesh ref={layer1} position={[0, 0, -200]}>
-                <planeGeometry args={[380, 380]} />
-                <meshBasicMaterial map={texture} transparent opacity={0.5} />
-            </mesh>
-
-            {/* Mid layer — normal blending */}
-            <mesh ref={layer2} position={[0, 0, -100]}>
-                <planeGeometry args={[240, 240]} />
-                <meshBasicMaterial map={texture} transparent opacity={0.75} />
-            </mesh>
-
-            {/* Front layer — full opacity, this is the main image */}
+            {/* Always render the main layer */}
             <mesh ref={layer3} position={[0, 0, -50]}>
                 <planeGeometry args={[140, 140]} />
                 <meshBasicMaterial map={texture} transparent opacity={1.0} />
             </mesh>
+
+            {/* Only render extra layers on desktop */}
+            {tier === 'high' && (
+                <>
+                    <mesh ref={layer1} position={[0, 0, -200]}>
+                        <planeGeometry args={[380, 380]} />
+                        <meshBasicMaterial map={texture} transparent opacity={0.5} />
+                    </mesh>
+                    <mesh ref={layer2} position={[0, 0, -100]}>
+                        <planeGeometry args={[240, 240]} />
+                        <meshBasicMaterial map={texture} transparent opacity={0.75} />
+                    </mesh>
+                </>
+            )}
 
             {/* Additive glow on top — separate subtle layer */}
             <mesh position={[0, 0, -45]}>
@@ -237,9 +253,9 @@ function SupernovaTreatment({ obj }: { obj: CosmicObject }) {
     );
 }
 
-function StarClusterTreatment({ obj }: { obj: CosmicObject }) {
+function StarClusterTreatment({ obj, tier }: TreatmentProps) {
     const particlesRef = useRef<THREE.Points>(null);
-    const count = 15000;
+    const count = tier === 'high' ? 15000 : 5000;
 
     const [positions, colors, sizes] = React.useMemo(() => {
         const pos = new Float32Array(count * 3);
@@ -282,7 +298,7 @@ function StarClusterTreatment({ obj }: { obj: CosmicObject }) {
         }
 
         return [pos, col, siz];
-    }, []);
+    }, [count]);
 
     useFrame(() => {
         if (particlesRef.current) {
@@ -312,7 +328,7 @@ function StarClusterTreatment({ obj }: { obj: CosmicObject }) {
             </points>
 
             {/* Sparse background stars to give depth context */}
-            <Stars radius={200} depth={300} count={1000} factor={2} saturation={0} fade speed={0.2} />
+            <Stars radius={200} depth={300} count={tier === 'high' ? 1000 : 300} factor={2} saturation={0} fade speed={0.2} />
 
             {/* Subtle core glow */}
             <pointLight position={[0, 0, 0]} intensity={0.5} color="#fff8e0" distance={80} />
@@ -320,9 +336,12 @@ function StarClusterTreatment({ obj }: { obj: CosmicObject }) {
     );
 }
 
-function AuroraTreatment({ obj }: { obj: CosmicObject }) {
+function AuroraTreatment({ obj, tier }: TreatmentProps) {
     const rawUrl = obj.imageUrl || '';
-    const textureUrl = rawUrl;
+    const width = tier === 'high' ? 2048 : 1024;
+    const textureUrl = rawUrl.startsWith('http') && !rawUrl.includes('wsrv.nl')
+        ? `https://wsrv.nl/?url=${encodeURIComponent(rawUrl)}&output=jpg&w=${width}`
+        : rawUrl;
     const texture = textureUrl ? useTexture(textureUrl) : null;
     const meshRef = useRef<THREE.Mesh>(null);
     const materialRef = useRef<THREE.ShaderMaterial>(null);
@@ -368,8 +387,9 @@ function AuroraTreatment({ obj }: { obj: CosmicObject }) {
     return (
         <group>
             <mesh ref={meshRef} position={[0, 0, -80]}>
-                <planeGeometry args={[400, 300, 32, 32]} />
-                {texture ? (
+                {/* Mobile: use 1-segment plane geometry (no vertex wave calc); desktop: 32x32 */}
+                <planeGeometry args={[400, 300, tier === 'high' ? 32 : 1, tier === 'high' ? 32 : 1]} />
+                {texture && tier === 'high' ? (
                     <shaderMaterial
                         ref={materialRef}
                         vertexShader={vertexShader}
@@ -380,15 +400,16 @@ function AuroraTreatment({ obj }: { obj: CosmicObject }) {
                         }}
                     />
                 ) : (
-                    <meshBasicMaterial color={obj.glowColor || '#00d4d8'} />
+                    // Mobile: plain material, no shader cost
+                    <meshBasicMaterial map={texture ?? undefined} color={!texture ? (obj.glowColor || '#00d4d8') : undefined} />
                 )}
             </mesh>
-            <Stars radius={100} depth={200} count={2000} factor={3} saturation={0} fade speed={0.3} />
+            <Stars radius={100} depth={200} count={tier === 'high' ? 2000 : 500} factor={3} saturation={0} fade speed={0.3} />
         </group>
     );
 }
 
-function PulsarTreatment({ obj }: { obj: CosmicObject }) {
+function PulsarTreatment({ obj, tier }: TreatmentProps) {
     const starRef = useRef<THREE.Mesh>(null);
     const beam1Ref = useRef<THREE.Mesh>(null);
     const beam2Ref = useRef<THREE.Mesh>(null);
@@ -421,7 +442,7 @@ function PulsarTreatment({ obj }: { obj: CosmicObject }) {
             </mesh>
 
             <pointLight distance={100} intensity={2} color={obj.glowColor || "#00d4d8"} />
-            <Stars radius={50} depth={200} count={2000} factor={4} saturation={0} fade speed={1} />
+            <Stars radius={50} depth={200} count={tier === 'high' ? 2000 : 600} factor={4} saturation={0} fade speed={1} />
         </group>
     );
 }
@@ -431,23 +452,29 @@ function PulsarTreatment({ obj }: { obj: CosmicObject }) {
 // ==========================================
 
 export default function ObservatoryScene({ currentObj, is360View }: ObservatorySceneProps) {
+    const tier = useDeviceTier();
+
     // Dynamic component rendering based on category
     const renderTreatment = () => {
         switch (currentObj.category) {
-            case 'nebula': return <NebulaTreatment obj={currentObj} is360View={is360View} />;
-            case 'galaxy': return <GalaxyTreatment obj={currentObj} />;
-            case 'blackhole': return <BlackHoleTreatment obj={currentObj} />;
-            case 'supernova': return <SupernovaTreatment obj={currentObj} />;
-            case 'cluster': return <StarClusterTreatment obj={currentObj} />;
-            case 'aurora': return <AuroraTreatment obj={currentObj} />;
-            case 'pulsar': return <PulsarTreatment obj={currentObj} />;
-            case 'test': return <NebulaTreatment obj={currentObj} is360View={is360View} />;
-            default: return <NebulaTreatment obj={currentObj} is360View={is360View} />; // Fallback to skybox
+            case 'nebula': return <NebulaTreatment obj={currentObj} tier={tier} is360View={is360View} />;
+            case 'galaxy': return <GalaxyTreatment obj={currentObj} tier={tier} />;
+            case 'blackhole': return <BlackHoleTreatment obj={currentObj} tier={tier} />;
+            case 'supernova': return <SupernovaTreatment obj={currentObj} tier={tier} />;
+            case 'cluster': return <StarClusterTreatment obj={currentObj} tier={tier} />;
+            case 'aurora': return <AuroraTreatment obj={currentObj} tier={tier} />;
+            case 'pulsar': return <PulsarTreatment obj={currentObj} tier={tier} />;
+            case 'test': return <NebulaTreatment obj={currentObj} tier={tier} is360View={is360View} />;
+            default: return <NebulaTreatment obj={currentObj} tier={tier} is360View={is360View} />; // Fallback to skybox
         }
     };
 
     return (
-        <Canvas camera={{ position: [0, 0, 50], fov: 60 }} gl={{ antialias: true, alpha: false }}>
+        <Canvas
+            camera={{ position: [0, 0, 50], fov: 60 }}
+            gl={{ antialias: true, alpha: false }}
+            dpr={[1, 2]}  // never exceed 2x regardless of device
+        >
             <color attach="background" args={['#000000']} />
 
             <Suspense fallback={null}>
