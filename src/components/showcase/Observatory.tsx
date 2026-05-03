@@ -164,8 +164,8 @@ export default function Observatory({ onViewChange }: ObservatoryProps) {
                 />
             </div>
 
-            {/* Return Link — positioned to avoid nav dots */}
-            <div className="absolute bottom-16 md:bottom-8 left-4 md:left-8 z-40 pointer-events-auto">
+            {/* Return Link — on mobile sits above nav dots; on md+ floats top-left below navbar */}
+            <div className="absolute bottom-16 md:bottom-auto md:top-24 left-4 md:left-8 z-40 pointer-events-auto">
                 <button
                     onClick={() => onViewChange('planets')}
                     className="group flex flex-col items-start gap-1 p-2 opacity-50 hover:opacity-100 active:opacity-100 transition-opacity duration-300"
