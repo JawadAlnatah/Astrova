@@ -106,7 +106,7 @@ export default function ObservatoryUI({
                 exit="exit"
             >
                 {/* Name & Classification (Left side, low) */}
-                <div className="absolute left-5 md:left-20 bottom-24 md:bottom-40 max-w-[calc(100%-2.5rem)] md:max-w-2xl pr-4 md:pr-0">
+                <div className="absolute left-5 md:left-20 bottom-24 md:bottom-28 lg:bottom-40 max-w-[calc(100%-2.5rem)] md:max-w-2xl pr-4 md:pr-0">
                     <motion.p
                         variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { delay: 0.3, duration: 1.5 } } }}
                         className="text-[#00d4d8] uppercase tracking-[0.3em] font-semibold text-[9px] md:text-xs mb-2 md:mb-3"
@@ -116,14 +116,14 @@ export default function ObservatoryUI({
                     </motion.p>
                     <motion.h1
                         variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { delay: 0.7, duration: 1.5 } } }}
-                        className="text-white font-bold leading-none mb-3 md:mb-6 tracking-widest uppercase"
-                        style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 'clamp(1.6rem, 5vw, 4.5rem)', textShadow: '0 4px 20px rgba(0,0,0,0.8)' }}
+                        className="text-white font-bold leading-none mb-3 md:mb-4 lg:mb-6 tracking-widest uppercase"
+                        style={{ fontFamily: 'Orbitron, sans-serif', fontSize: 'clamp(1.6rem, 4vw, 3.5rem)', textShadow: '0 4px 20px rgba(0,0,0,0.8)' }}
                     >
                         {currentObj.title}
                     </motion.h1>
                     <motion.p
                         variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: 1.5, duration: 2.0 } } }}
-                        className="text-white/80 text-sm md:text-lg leading-relaxed max-w-sm md:max-w-xl"
+                        className="text-white/80 text-sm md:text-base lg:text-lg leading-relaxed max-w-sm md:max-w-xl"
                         style={{ fontFamily: "'Playfair Display', 'Georgia', serif", textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}
                     >
                         {currentObj.fact}
@@ -133,7 +133,7 @@ export default function ObservatoryUI({
                 {/* Distance (Bottom right) — move up on mobile so it doesn't overlap nav dots */}
                 <motion.div
                     variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: 2.0, duration: 2.0 } } }}
-                    className="absolute right-4 md:right-8 bottom-20 md:bottom-12 text-white/30 text-[9px] md:text-xs tracking-widest uppercase text-right max-w-[160px] md:max-w-[200px]"
+                    className="absolute right-4 md:right-8 bottom-20 md:bottom-10 lg:bottom-12 text-white/30 text-[9px] md:text-xs tracking-widest uppercase text-right max-w-[160px] md:max-w-[200px]"
                     style={{ fontFamily: 'Orbitron, sans-serif' }}
                 >
                     {currentObj.distance}
@@ -142,7 +142,7 @@ export default function ObservatoryUI({
                 {/* Credit (Bottom left) — push up so it doesn't overlap back button */}
                 <motion.div
                     variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: 2.5, duration: 2.0 } } }}
-                    className="absolute left-5 md:left-8 bottom-20 md:bottom-12 text-white/30 text-[8px] md:text-[10px] tracking-widest uppercase"
+                    className="absolute left-5 md:left-8 bottom-20 md:bottom-10 lg:bottom-12 text-white/30 text-[8px] md:text-[10px] tracking-widest uppercase"
                     style={{ fontFamily: 'Orbitron, sans-serif' }}
                 >
                     {currentObj.credit}

@@ -18,7 +18,7 @@ export interface CosmicObject {
 export const cosmosCollection: CosmicObject[] = [
     {
         id: 'cg-4',
-        title: "God's Hand (CG 4)",
+        title: "CG 4",
         classification: 'COMETARY GLOBULE',
         category: 'nebula',
         fact: 'This eerie, jaw-like structure is a cometary globule located in the Puppis constellation, stretching 8 light-years across as it reaches into the cosmos.',
